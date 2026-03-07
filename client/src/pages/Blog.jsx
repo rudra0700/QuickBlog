@@ -43,15 +43,18 @@ const Blog = () => {
         <h1 className="text-2xl sm:text-5xl font-semibold max-w-2xl mx-auto text-gray-800">
           {data.title}
         </h1>
-        <h2 dangerouslySetInnerHTML={{__html: data.subTitle}} className="my-5 max-w-lg truncate mx-auto"></h2>
+        <h2
+          dangerouslySetInnerHTML={{ __html: data.subTitle }}
+          className="my-5 max-w-lg truncate mx-auto"
+        ></h2>
         <p className="inline-block py-1 px-4 rounded-full mb-6 text-sm border border-blue-600/35 bg-blue-600/5 font-medium text-blue-600">
           Rudra Barua
         </p>
       </div>
 
+      {/* Blog section  */}
       <div className="mx-5 max-w-5xl md:mx-auto mt-6 my-10 ">
         <img src={data.image} alt="blog image" className="rounded-3xl mb-5" />
-        {/* Blog section  */}
         <div
           className="rich-text max-w-3xl mx-auto"
           dangerouslySetInnerHTML={{ __html: data.description }}
@@ -110,7 +113,11 @@ const Blog = () => {
           <div className="flex">
             <img src={assets.facebook_icon} width={50} alt="facebook_icon" />
             <img src={assets.twitter_icon} width={50} alt="twitter_icon" />
-            <img src={assets.googleplus_icon} width={50} alt="googlePlus_icon" />
+            <img
+              src={assets.googleplus_icon}
+              width={50}
+              alt="googlePlus_icon"
+            />
           </div>
         </div>
       </div>
