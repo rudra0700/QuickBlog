@@ -24,7 +24,7 @@ export const blogController = async (req, res) => {
 
     // optimization through imagekit url transformation
     const optimizedUrlImage = imagekitClient.helper.buildSrc({
-        urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
+      urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
       src: response.filePath,
       transformation: [
         { quality: "auto" }, // auto compression
@@ -45,5 +45,50 @@ export const blogController = async (req, res) => {
     res.json({ success: true, message: "Blog added successfully" });
   } catch (error) {
     res.json({ sucess: false, message: error.message });
+  }
+};
+
+export const getAllBlogs = async (req, res) => {
+  try {
+    const blogs = await Blog.find({ isPublished: true });
+    res.json({ success: true, blogs });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+};
+
+export const getBlogById = async (req, res) => {
+  try {
+    const { blogId } = req.params;
+    const blog = await Blog.findById(blogId);
+    if (!blog) {
+      return res.json({ success: false, message: "Blogs not found" });
+    }
+    res.json({ success: true, blog });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+};
+
+export const deleteBlogById = async (req, res) => {
+  try {
+    const { id } = req.body;
+    await Blog.findByIdAndDelete(id);
+
+    res.json({ success: true, message: "Blog deleted successfully" });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+};
+
+export const togglePublish = async (req, res) => {
+  try {
+    const { id } = req.body;
+    const blog = await Blog.findById(id);
+    blog.isPublished = !blog.isPublished;
+    await blog.save();
+    res.json({ success: true, message: "Blog status updated" });
+  } catch (error) {
+    res.json({ success: false, message: error.message });
   }
 };
