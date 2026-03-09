@@ -5,7 +5,6 @@ import { Comment } from "../model/Comment.js";
 export const adminController = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log(email, password);
 
     if (
       email !== process.env.ADMIN_EMAIL ||
