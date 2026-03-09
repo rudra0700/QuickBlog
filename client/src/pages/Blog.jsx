@@ -1,26 +1,58 @@
 import { useParams } from "react-router";
-import { assets, blog_data, comments_data } from "../assets/assets";
+import { assets } from "../assets/assets";
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import moment from "moment";
 import Footer from "../components/Footer";
 import Loader from "../components/Loader";
+import { useAppContext } from "../hooks/useAppContext";
+import toast from "react-hot-toast";
 
 const Blog = () => {
   const { id } = useParams();
+  const { axios } = useAppContext();
   const [data, setData] = useState(null);
   const [comments, setComments] = useState([]);
+  const [name, setName] = useState("");
+  const [content, setContent] = useState("");
 
   const fetchBlogData = async () => {
-    const data = await blog_data.find((item) => item._id === id);
-    setData(data);
+    try {
+      const { data } = await axios.get(`/api/blog/${id}`);
+      data?.success ? setData(data.blog) : toast.error(data.message);
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   const fetchCommentData = async () => {
-    setComments(comments_data);
+    try {
+      const { data } = await axios.post("/api/blog/comments", { blogId: id });
+      data?.success ? setComments(data.comments) : toast.error(data.message);
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
-  const addComment = () => {};
+  const addComment = async (e) => {
+    e.preventDefault()
+    try {
+      const { data } = await axios.post("/api/blog/add-comment", {
+        blog: id,
+        name,
+        content,
+      });
+      if (data?.success) {
+        toast.success(data.message);
+        setName("");
+        setContent("");
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
 
   useEffect(() => {
     fetchBlogData();
@@ -86,12 +118,14 @@ const Blog = () => {
             className="flex flex-col items-start gap-4 max-w-lg"
           >
             <input
+              onChange={(e) => setName(e.target.value)}
               type="text"
               placeholder="Name"
               required
               className="w-full p-2 border border-gray-300 rounded outline-none"
             />
             <textarea
+              onChange={(e) => setContent(e.target.value)}
               placeholder="Comment"
               className="w-full p-2 border border-gray-300 rounded outline-none h-48"
               required
