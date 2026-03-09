@@ -2,6 +2,7 @@ import fs from "fs";
 import { imagekitClient } from "../config/imagekit.js";
 import { Blog } from "../model/blog.js";
 import { Comment } from "../model/Comment.js";
+import main from "../config/gemini.js";
 
 export const blogController = async (req, res) => {
   try {
@@ -101,6 +102,7 @@ export const togglePublish = async (req, res) => {
 export const addComment = async (req, res) => {
   try {
     const { blog, name, content } = req.body;
+    console.log(blog, name, content)
     await Comment.create({ blog, name, content });
     res.json({ success: true, message: "Comment added for review" });
   } catch (error) {
@@ -111,9 +113,19 @@ export const addComment = async (req, res) => {
 export const getBlogComment = async (req, res) => {
   try {
     const { blogId } = req.body;
-    const comment = await Comment.find({blog: blogId, isApproved: true}).sort({createdAt: -1});
-    res.json({ success: true, comment });
+    const comments = await Comment.find({blog: blogId, isApproved: true}).sort({createdAt: -1});
+    res.json({ success: true, comments });
   } catch (error) {
     res.json({ success: false, message: error.message });
   }
 };
+
+export const generateContent = async (req, res) => {
+  try {
+    const {prompt} = req.body;
+    const content = await main(prompt + " Generate a blog content for this topic in a simple text format");
+    res.json({success: true, content})
+  } catch (error) {
+    res.json({success:false, message: error.message})
+  }
+}

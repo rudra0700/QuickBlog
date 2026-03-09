@@ -44,18 +44,18 @@ export const getAllCommentsAdmin = async (req, res) => {
 export const getDashboard = async (req, res) => {
   try {
     const recentBlogs = await Blog.find({}).sort({ createdAt: -1 }).limit(5);
-    const blogs = Blog.countDocuments();
-    const comments = Comment.countDocuments();
-    const drafts = Blog.countDocuments({ isPublished: false });
+    const blogs = await Blog.countDocuments();
+    const comments = await Comment.countDocuments();
+    const drafts = await Blog.countDocuments({ isPublished: false });
     const dashboardData = {
       recentBlogs,
       blogs,
       comments,
       drafts,
     };
-    res.send({ success: false, dashboardData });
+    res.json({ success: true, dashboardData });
   } catch (error) {
-    res.send({ success: false, message: error.message });
+    res.json({ success: false, message: error.message });
   }
 };
 
@@ -74,7 +74,7 @@ export const approveCommentById = async (req, res) => {
   try {
     const { id } = req.body;
     await Comment.findByIdAndUpdate(id, {isApproved: true});
-    res.send({ success: false, message: "Comment approved successfully" });
+    res.send({ success: true, message: "Comment approved successfully" });
   } catch (error) {
     res.send({ success: false, message: error.message });
   }
