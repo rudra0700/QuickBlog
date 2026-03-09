@@ -1,12 +1,16 @@
 import toast from "react-hot-toast";
 import { assets } from "../../assets/assets";
 import { useAppContext } from "../../hooks/useAppContext";
+import { CiEdit } from "react-icons/ci";
+import {useNavigate} from "react-router"
 
 const BlogTableItem = ({ blog, fetchBlog, index }) => {
   const { title, createdAt } = blog;
   const blogDate = new Date(createdAt);
 
+
   const { axios } = useAppContext();
+  const navigate = useNavigate();
 
   const deleteBlogById = async () => {
     
@@ -39,6 +43,10 @@ const BlogTableItem = ({ blog, fetchBlog, index }) => {
       toast.error(error.message);
     }
   };
+
+  const updateBlog = async () => {
+    navigate("/admin/addblog", {state: {blog}})
+  }
   return (
     <tr>
       <th className="px-2 py-4">{index}</th>
@@ -51,7 +59,7 @@ const BlogTableItem = ({ blog, fetchBlog, index }) => {
           {blog.isPublished ? "Published" : "Unpublished"}
         </p>
       </td>
-      <td className="px-2 py-4 flex text-xs gap-3">
+      <td className="px-2 py-4 flex items-center text-xs gap-3">
         <button
           onClick={togglePublish}
           className="border px-2 py-0.5 mt-1 rounded cursor-pointer"
@@ -64,6 +72,7 @@ const BlogTableItem = ({ blog, fetchBlog, index }) => {
           alt="crossIcon"
           className="w-8 hover:scale-110 transition-all cursor-pointer"
         />
+        <CiEdit onClick={updateBlog} className="text-2xl" />
       </td>
     </tr>
   );

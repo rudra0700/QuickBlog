@@ -12,20 +12,21 @@ import { Toaster } from "react-hot-toast";
 import { useAppContext } from "./hooks/useAppContext";
 
 const App = () => {
-  const {token} = useAppContext();
+  const { token } = useAppContext();
   return (
     <div>
-      <Toaster />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/blog/:id" element={<Blog />} />
-        <Route path="/admin" element={token ? <Layout /> : <Login />}>
-          <Route index element={<Dashboard />} />
-          <Route path="addblog" element={<AddBlog />} />
-          <Route path="comments" element={<Comments />} />
-          <Route path="listblog" element={<ListBlog />} />
-        </Route>
-      </Routes>
+      
+        <Toaster />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/blog/:id" element={<Blog />} />
+          <Route path="/admin" element={token ? <Layout /> : <Login />}>
+            <Route index element={<Dashboard />} />
+            <Route path="addblog" element={<AddBlog />} />
+            <Route path="comments" element={<Comments />} />
+            <Route path="listblog" element={<ListBlog />} />
+          </Route>
+        </Routes>
     </div>
   );
 };

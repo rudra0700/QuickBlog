@@ -26,26 +26,20 @@ const AppProvider = ({ children }) => {
 
   const fetchBlogs = async () => {
     try {
-      const {data} = await axios.get("/api/blog/all");
-     
-      data?.success
-        ? setBlogs(data?.blogs)
-        : toast(data.message);
+      const { data } = await axios.get("/api/blog/all");
+
+      data?.success ? setBlogs(data?.blogs) : toast(data.message);
     } catch (error) {
       toast.error(error.message);
     }
-    console.log("testing");
   };
-
-  console.log(blogs);
-
 
   useEffect(() => {
     fetchBlogs();
     const token = localStorage.getItem("token");
-    if(token){
-        setToken(token);
-        axios.defaults.headers.common["Authorization"] = `${token}`
+    if (token) {
+      setToken(token);
+      axios.defaults.headers.common["Authorization"] = `${token}`;
     }
   }, []);
 

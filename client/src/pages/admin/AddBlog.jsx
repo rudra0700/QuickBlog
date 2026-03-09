@@ -4,8 +4,11 @@ import Quill from "quill";
 import { useAppContext } from "../../hooks/useAppContext";
 import toast from "react-hot-toast";
 import { parse } from "marked";
+import { useLocation } from "react-router";
 
 const AddBlog = () => {
+  const location = useLocation();
+  const editingBlog = location?.state?.blog;
   const { axios } = useAppContext();
   const [isAdding, setIsAdding] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -39,11 +42,11 @@ const AddBlog = () => {
   };
 
   const onSubmitHandler = async (e) => {
+    e.preventDefault();
     try {
-      e.preventDefault();
       setIsAdding(true);
 
-      const blog = {
+      const blogData = {
         title,
         subTitle,
         description: quillRef.current.root.innerHTML,
@@ -51,20 +54,29 @@ const AddBlog = () => {
         isPublished,
       };
 
-      const formData = new FormData();
-      formData.append("blog", JSON.stringify(blog));
-      formData.append("image", image);
+      if (editingBlog) {
+        //  UPDATE
+        const { data } = await axios.patch("/api/blog/update-blog", {
+          id: editingBlog._id,
+          ...blogData,
+        });
 
-      const { data } = await axios.post("/api/blog/add", formData);
-      if (data?.success) {
-        toast.success(data.message);
-        setImage(false);
-        setTitle("");
-        setSubTitle("");
-        quillRef.current.root.innerHTML = "";
-        setCategory("StartUp");
+        if (data?.success) toast.success("Blog Updated");
       } else {
-        toast.error(data.message);
+        // ADD
+        const formData = new FormData();
+        formData.append("blog", JSON.stringify(blogData));
+        formData.append("image", image);
+        const { data } = await axios.post("/api/blog/add", formData);
+
+        if (data?.success) {
+          toast.success(data.message);
+          setImage(false);
+          setTitle("");
+          setSubTitle("");
+          quillRef.current.root.innerHTML = "";
+          setCategory("StartUp");
+        }
       }
     } catch (error) {
       toast.error(error.message);
@@ -80,6 +92,19 @@ const AddBlog = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (editingBlog) {
+      setTitle(editingBlog.title);
+      setSubTitle(editingBlog.subTitle);
+      setCategory(editingBlog.category);
+      setIsPublished(editingBlog.isPublished);
+
+      if (quillRef.current) {
+        quillRef.current.root.innerHTML = editingBlog.description;
+      }
+    }
+  }, [editingBlog]);
+
   return (
     <form
       onSubmit={onSubmitHandler}
@@ -89,7 +114,13 @@ const AddBlog = () => {
         <p>Upload Thumbnail</p>
         <label htmlFor="image">
           <img
-            src={!image ? assets.upload_area : URL.createObjectURL(image)}
+            src={
+              image
+                ? URL.createObjectURL(image)
+                : editingBlog
+                  ? editingBlog.image
+                  : assets.upload_area
+            }
             alt="uploadArea"
             className="mt-2 h-16 rounded cursor-pointer"
           />
@@ -98,7 +129,7 @@ const AddBlog = () => {
             type="file"
             id="image"
             hidden
-            required
+            required={!editingBlog}
           />
         </label>
         <p>Blog Title</p>
@@ -126,7 +157,7 @@ const AddBlog = () => {
           <div ref={editorRef}></div>
           {isLoading && (
             <div className="absolute right-0 top-0 bottom-0 left-0 flex items-center justify-center mt-2 bg-black/10">
-                <div className="w-8 h-8 rounded-full border-2 border-t-white animate-spin"></div>
+              <div className="w-8 h-8 rounded-full border-2 border-t-white animate-spin"></div>
             </div>
           )}
           <button
@@ -140,6 +171,7 @@ const AddBlog = () => {
         </div>
         <p className="mt-4">Blog Category</p>
         <select
+           value={category}
           onChange={(e) => setCategory(e.target.value)}
           name="category"
           className="mt-2 px-3 py-2 border border-gray-300 text-gray-500 outline-none rounded"
@@ -167,7 +199,11 @@ const AddBlog = () => {
           disabled={isAdding}
           className="mt-8 w-40 h-10 bg-blue-600 text-white rounded cursor-pointer text-sm"
         >
-          {isAdding ? "Adding..." : "Add Blog"}
+          {isAdding
+            ? "processing..."
+            : editingBlog
+              ? "Update Blog"
+              : "Add Blog"}
         </button>
       </div>
     </form>
