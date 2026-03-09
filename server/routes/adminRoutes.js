@@ -15,6 +15,7 @@ adminRouter.post("/login", adminController);
 adminRouter.get("/blogs", auth, getAllBlogsAdmin);
 adminRouter.get("/comments", auth, getAllCommentsAdmin);
 adminRouter.delete("/delete-comment", auth, deleteCommentById);
+// blogRouter.delete("/delete/:id", auth, deleteBlogById); // we can delete blog using param also
 adminRouter.patch("/approve-comment", auth, approveCommentById);
 adminRouter.get("/dashboard", auth, getDashboard);
 

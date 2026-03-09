@@ -18,6 +18,7 @@ blogRouter.post("/add", upload.single("image"), auth, blogController);
 blogRouter.get("/all", getAllBlogs);
 blogRouter.get("/:blogId", getBlogById);
 blogRouter.delete("/delete", auth, deleteBlogById);
+// blogRouter.delete("/delete/:id", auth, deleteBlogById); // we can delete blog using param also
 blogRouter.patch("/toggle-publish", auth, togglePublish);
 blogRouter.post("/comments", getBlogComment);
 blogRouter.post("/add-comment", addComment)
