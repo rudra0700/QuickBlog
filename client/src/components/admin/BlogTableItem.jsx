@@ -9,10 +9,12 @@ const BlogTableItem = ({ blog, fetchBlog, index }) => {
   const { axios } = useAppContext();
 
   const deleteBlogById = async () => {
+    
     const confirm = window.confirm("Are you sure want to delete this blog?");
     if (!confirm) return;
     try {
-      const { data } = await axios.delete("/api/blog/delete", { id: blog._id });
+      // axios.delete(`/api/blog/delete/${blog._id}`); we can delete comment also using params
+      const { data } = await axios.delete("/api/blog/delete", {data: { id: blog._id }});
       if (data?.success) {
         toast.success(data.message);
         await fetchBlog();

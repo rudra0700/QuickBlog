@@ -21,17 +21,21 @@ const CommentTableItem = ({ comment, fetchComments }) => {
     } catch (error) {
       toast.error(error.message);
     }
-  }; 
-  
+  };
+
   const deleteComment = async () => {
     const confirm = window.confirm("Are you sure want to delete this comment?");
-    if(!confirm) return;
+    if (!confirm) return;
     try {
+      // axios.delete(`/api/blog/delete/${blog._id}`); we can delete comment also using params
       const { data } = await axios.delete("/api/admin/delete-comment", {
-        id: _id,
+        data: {
+          id: _id,
+        },
       });
       if (data?.success) {
         toast.success(data.message);
+        fetchComments();
       } else {
         toast.error(data.message);
       }
@@ -68,7 +72,7 @@ const CommentTableItem = ({ comment, fetchComments }) => {
             </p>
           )}
           <img
-             onClick={deleteComment}
+            onClick={deleteComment}
             src={assets.bin_icon}
             alt="binIcon"
             className="w-5 hover:scale-110 transition-all cursor-pointer"
