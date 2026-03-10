@@ -18,11 +18,11 @@ app.get("/", (req, res) => {
   res.send({ message: "Quick Blog is live now" });
 });
 
-app.use("/api/admin", adminRouter)
-app.use("/api/blog", blogRouter)
+app.use("/api/admin", adminRouter);
+app.use("/api/blog", blogRouter);
 
+// app.listen(PORT, () => {
+//   console.log(`Server is running on ${PORT}`);
+// });
 
-app.listen(PORT, () =>{
-    console.log(`Server is running on ${PORT}`);
-    
-})
+export default app;
