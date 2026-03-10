@@ -1,6 +1,6 @@
 import fs from "fs";
 import { imagekitClient } from "../config/imagekit.js";
-import { Blog } from "../model/blog.js";
+import { Blog } from "../model/Blog.js";
 import { Comment } from "../model/Comment.js";
 import main from "../config/gemini.js";
 
