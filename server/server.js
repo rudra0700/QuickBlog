@@ -5,8 +5,8 @@ import connectDB from "./config/db.js";
 import { adminRouter } from "./routes/adminRoutes.js";
 import { blogRouter } from "./routes/blogRoutes.js";
 
-await connectDB();
 const app = express();
+await connectDB();
 
 // MiddleWares
 app.use(cors());
