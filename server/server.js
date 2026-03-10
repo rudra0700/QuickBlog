@@ -21,8 +21,8 @@ app.get("/", (req, res) => {
 app.use("/api/admin", adminRouter);
 app.use("/api/blog", blogRouter);
 
-// app.listen(PORT, () => {
-//   console.log(`Server is running on ${PORT}`);
-// });
+app.listen(PORT, () => {
+  console.log(`Server is running on ${PORT}`);
+});
 
 export default app;
