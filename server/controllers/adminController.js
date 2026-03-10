@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { Blog } from "../model/blog.js";
+import { Blog } from "../model/Blog.js";
 import { Comment } from "../model/Comment.js";
 
 export const adminController = async (req, res) => {
